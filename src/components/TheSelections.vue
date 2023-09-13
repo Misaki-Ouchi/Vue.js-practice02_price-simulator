@@ -82,9 +82,18 @@ const list = ref([
 ]);
 </script>
 <template>
-  <template v-for="value in list">
-    <Selection
-      :value="value"
-    ></Selection>
-  </template>
+  <div class="slider-outer">
+    <transition :name="trans_name">
+      <div class="slider-inner" v-for="(value, idx) in list" v-if="current_slide == idx">
+          <Selection
+            :key="idx"
+            :value="value"
+          ></Selection>
+      </div>
+    </transition>
+  </div>
+  <div class="btn">
+    <button @click="prev()">prev</button>
+    <button @click="next()">next</button>
+  </div>
 </template>

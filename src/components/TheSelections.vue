@@ -7,7 +7,7 @@ const data = reactive({
   current_slide: 0,
   isDisabledP: true,
 });
-const list = [
+const list = ref([
   {
     title: "電話番号（090等）は必要ですか？",
     items: [
@@ -25,7 +25,7 @@ const list = [
         isRecommend: false,
         isSale: false,
       },
-    ]
+    ],
   },
   {
     title: "ご利用になるSIMの形状を教えてください",
@@ -85,33 +85,60 @@ const list = [
       },
     ],
   },
-];
+]);
 // 選択内容格納リスト（仮）
 const selectedItem = ref([]);
 // ボタン選択イベント
-const handleEvent = (newName) => {
+const handleEvent = (newData) => {
   let a = {
-    que: newName.que,
-    ans: newName.ans,
+    que: newData.que,
+    ans: newData.ans,
   };
+  // 格納用リストににデータ格納
   selectedItem.value.push(a);
+  // 次の選択肢へ
   next();
+  // リストにisSelectedを格納
+  // データに格納している名前から配列が何番目かを特定
+  let title = a.que;
+  let num;
+  for (let i = 0; i < list.value.length; i++) {
+    if (list.value[i].title === title) {
+      num = i;
+    }
+  }
+  console.log(list.value[num])
+  let msg = a.ans;
+  let num2;
+  for (let i = 0; i < list.value.length; i++) {
+    if (list.value[i].msg === msg) {
+      num2 = i;
+    }
+  }
+  console.log(list.value[num].items[num2])
 };
+// 前の設問に戻る
 const prev = () => {
   data.trans_name = "prev";
   data.current_slide--;
   data.isDisabledN = false;
   if (data.current_slide <= 0) {
     data.current_slide = 0;
+    // ボタン無効化
     data.isDisabledP = true;
+    // 選択データ初期化
+    selectedItem.value = [];
   }
+  // 一つ前の選択データ削除
+  selectedItem.value.pop();
 };
+// 次の設問に移る
 const next = () => {
   data.trans_name = "next";
   data.current_slide++;
   data.isDisabledP = false;
-  if (data.current_slide >= list.length - 1) {
-    data.current_slide = list.length - 1;
+  if (data.current_slide >= list.value.length - 1) {
+    data.current_slide = list.value.length - 1;
     // 下にスライド
   }
 };
@@ -127,12 +154,13 @@ const next = () => {
           v-if="data.current_slide === idx"
           :value="value"
           @clickEvent="handleEvent"
+          :listIdx="idx"
         ></Selection>
       </div>
     </transition-group>
   </div>
   <div class="btn">
-    <button @click="prev()" :disabled="data.isDisabledP">prev</button>
+    <button @click="prev()" :disabled="data.isDisabledP">前の設問に戻る</button>
   </div>
 </template>
 <style scoped>
@@ -151,7 +179,7 @@ const next = () => {
 .btn {
   position: relative;
   margin: 0 auto 20px;
-  width: 90px;
+  width: 8rem;
 }
 .next-enter-active,
 .next-leave-active,

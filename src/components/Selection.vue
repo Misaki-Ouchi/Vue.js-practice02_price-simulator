@@ -8,13 +8,17 @@ defineProps<{
 }>();
 defineEmits(["clickEvent"]);
 
+// const isSelected = ref('')
+// const selectClick = () => {
+//   isSelected.value = true
+// }
 </script>
 <template>
   <Question>{{ value.title }}</Question>
-  <template v-for="item in value.items">
+  <template v-for="(item, idx) in value.items">
     <div class="selection">
       <Normal-Button
-        :isSelected="item.isSelected"
+        :isSelected="item.select"
         :msgType1="item.msgType1"
         :msgType2="item.msgType2"
         :isRecommend="item.isRecommend"

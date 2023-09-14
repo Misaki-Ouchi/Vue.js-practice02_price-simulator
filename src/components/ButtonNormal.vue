@@ -2,12 +2,11 @@
 import { ref, reactive } from "vue";
 
 defineProps<{
-  isSelected: boolean;
+  isSelected: string;
   msgType1: boolean;
   msgType2: boolean;
   isRecommend: boolean;
   isSale: boolean;
-  isSale: string;
 }>();
 
 // button選択で.selected .deselected付与

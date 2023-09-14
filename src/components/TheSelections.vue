@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import { reactive } from "vue";
+import { ref, reactive } from "vue";
 import Selection from "./Selection.vue";
 
 const data = reactive({
   trans_name: "next",
   current_slide: 0,
   isDisabledP: true,
-  isDisabledN: false,
 });
 const list = [
   {
@@ -26,7 +25,7 @@ const list = [
         isRecommend: false,
         isSale: false,
       },
-    ],
+    ]
   },
   {
     title: "ご利用になるSIMの形状を教えてください",
@@ -87,6 +86,17 @@ const list = [
     ],
   },
 ];
+// 選択内容格納リスト（仮）
+const selectedItem = ref([]);
+// ボタン選択イベント
+const handleEvent = (newName) => {
+  let a = {
+    que: newName.que,
+    ans: newName.ans,
+  };
+  selectedItem.value.push(a);
+  next();
+};
 const prev = () => {
   data.trans_name = "prev";
   data.current_slide--;
@@ -102,11 +112,13 @@ const next = () => {
   data.isDisabledP = false;
   if (data.current_slide >= list.length - 1) {
     data.current_slide = list.length - 1;
-    data.isDisabledN = true;
+    // 下にスライド
   }
 };
+// listにisSelected入れて、ボタン押したらtrue/false格納
 </script>
 <template>
+  {{ selectedItem }}
   <div class="slider-outer">
     <transition-group :name="data.trans_name">
       <div class="slider-inner" :key="idx" v-for="(value, idx) in list">
@@ -114,13 +126,13 @@ const next = () => {
           :key="idx"
           v-if="data.current_slide === idx"
           :value="value"
+          @clickEvent="handleEvent"
         ></Selection>
       </div>
     </transition-group>
   </div>
   <div class="btn">
     <button @click="prev()" :disabled="data.isDisabledP">prev</button>
-    <button @click="next()" :disabled="data.isDisabledN">next</button>
   </div>
 </template>
 <style scoped>
@@ -141,9 +153,11 @@ const next = () => {
   margin: 0 auto 20px;
   width: 90px;
 }
-.next-enter-active, .next-leave-active,
-.prev-enter-active, .prev-leave-active  {
-  transition: all .8s ease-out;
+.next-enter-active,
+.next-leave-active,
+.prev-enter-active,
+.prev-leave-active {
+  transition: all 0.8s ease-out;
 }
 .next-enter {
   transform: translateX(450px);
@@ -169,5 +183,4 @@ const next = () => {
 .prev-leave-to {
   transform: translateX(450px);
 }
-
 </style>

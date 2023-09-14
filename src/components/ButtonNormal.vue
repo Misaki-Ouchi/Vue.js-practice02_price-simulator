@@ -3,28 +3,20 @@ import { ref, reactive } from "vue";
 
 defineProps<{
   isSelected: boolean;
-  isDeselected: boolean;
   msgType1: boolean;
   msgType2: boolean;
   isRecommend: boolean;
   isSale: boolean;
-  selectedData: string;
+  isSale: string;
 }>();
-defineEmits(['btnClick', 'selected'])
 
-const btnClick = (e) => {
-  console.log("a");
-  console.log(e.target.dataset.selected);
-  let selected = e.target.dataset.selected
-};
 // button選択で.selected .deselected付与
 </script>
 
 <template>
   <button
-    :class="{ selected: isSelected, deselected: isDeselected }"
-    @click="btnClick"
-    :data-selected="selectedData"
+    :class="{ selected: isSelected, deselected: !isSelected }"
+    @click="selectClick"
   >
     <div class="button-wrap">
       <!-- アイコン -->

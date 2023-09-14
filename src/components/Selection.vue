@@ -2,30 +2,24 @@
 import { ref, reactive } from "vue";
 import Question from "./Question.vue";
 import NormalButton from "./ButtonNormal.vue";
+
 defineProps<{
   value: {};
 }>();
-
-const data = reactive({
-  btnDataA: false,
-  btnDataB: false,
-})
+defineEmits(["clickEvent"]);
 
 </script>
-
 <template>
   <Question>{{ value.title }}</Question>
   <template v-for="item in value.items">
     <div class="selection">
       <Normal-Button
-        :isSelected="data.btnDataA"
-        :isDeselected="data.btnDataB"
+        :isSelected="item.isSelected"
         :msgType1="item.msgType1"
         :msgType2="item.msgType2"
         :isRecommend="item.isRecommend"
         :isSale="item.isSale"
-        :selectedData="item.msg[0]"
-        @click="btnClick"
+        @click="$emit('clickEvent', {que: value.title, ans: item.msg[0]})"
       >
         <template #icon>
           <!-- <svg></svg> -->

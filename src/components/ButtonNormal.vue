@@ -1,19 +1,31 @@
 <script setup lang="ts">
-  defineProps<{
-    isSelected: boolean
-    isDeselected: boolean
-    msgType1: boolean
-    msgType2: boolean
-    isRecommend: boolean
-    isSale: boolean
-  }>()
+import { ref, reactive } from "vue";
 
+defineProps<{
+  isSelected: boolean;
+  isDeselected: boolean;
+  msgType1: boolean;
+  msgType2: boolean;
+  isRecommend: boolean;
+  isSale: boolean;
+  selectedData: string;
+}>();
+defineEmits(['btnClick', 'selected'])
+
+const btnClick = (e) => {
+  console.log("a");
+  console.log(e.target.dataset.selected);
+  let selected = e.target.dataset.selected
+};
 // button選択で.selected .deselected付与
-
 </script>
 
 <template>
-  <button :class="{selected: isSelected, deselected: isDeselected}">
+  <button
+    :class="{ selected: isSelected, deselected: isDeselected }"
+    @click="btnClick"
+    :data-selected="selectedData"
+  >
     <div class="button-wrap">
       <!-- アイコン -->
       <i>
@@ -26,7 +38,9 @@
       </p>
       <!-- 中身 2行Ver.-->
       <p class="details" v-if="msgType2">
-        <span class="detail selected"><b><slot name="detail"></slot></b><br></span>
+        <span class="detail selected"
+          ><b><slot name="detail"></slot></b><br
+        /></span>
         <span class="detail-sub"><slot name="detail-sub"></slot></span>
       </p>
       <!-- オススメ -->
@@ -61,6 +75,7 @@ button {
   border: 2px solid #bbb;
   border-radius: 15px;
   background-color: #eee;
+  z-index: 10;
 }
 button.selected {
   border-color: rgb(255, 50, 180);

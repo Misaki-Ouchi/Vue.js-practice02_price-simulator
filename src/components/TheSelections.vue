@@ -1,21 +1,28 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { reactive } from "vue";
 import Selection from "./Selection.vue";
-const list = ref([
+
+const data = reactive({
+  trans_name: "next",
+  current_slide: 0,
+  isDisabledP: true,
+  isDisabledN: false,
+});
+const list = [
   {
     title: "電話番号（090等）は必要ですか？",
     items: [
       {
         msgType1: true,
         msgType2: false,
-        msg: ['必要', '（お乗り換えの方はこちら）'],
+        msg: ["必要", "（お乗り換えの方はこちら）"],
         isRecommend: false,
         isSale: false,
       },
       {
         msgType1: true,
         msgType2: false,
-        msg: ['不要'],
+        msg: ["不要"],
         isRecommend: false,
         isSale: false,
       },
@@ -27,14 +34,14 @@ const list = ref([
       {
         msgType1: true,
         msgType2: false,
-        msg: ['SIMカード', '（カード型）'],
+        msg: ["SIMカード", "（カード型）"],
         isRecommend: false,
         isSale: false,
       },
       {
         msgType1: true,
         msgType2: false,
-        msg: ['eSIM※'],
+        msg: ["eSIM※"],
         isRecommend: false,
         isSale: false,
       },
@@ -46,7 +53,7 @@ const list = ref([
       {
         msgType1: false,
         msgType2: true,
-        msg: ['通話定額5分+', '1回5分以内の国内通話無料'],
+        msg: ["通話定額5分+", "1回5分以内の国内通話無料"],
         isRecommend: false,
         isSale: true,
         prePrice: "500",
@@ -55,7 +62,7 @@ const list = ref([
       {
         msgType1: false,
         msgType2: true,
-        msg: ['通話定額10分+', '1回10分以内の国内通話無料'],
+        msg: ["通話定額10分+", "1回10分以内の国内通話無料"],
         isRecommend: false,
         isSale: true,
         prePrice: "700",
@@ -64,7 +71,7 @@ const list = ref([
       {
         msgType1: false,
         msgType2: true,
-        msg: ['かけ放題+', '無制限で国内通話無料'],
+        msg: ["かけ放題+", "無制限で国内通話無料"],
         isRecommend: false,
         isSale: true,
         prePrice: "1400",
@@ -73,27 +80,94 @@ const list = ref([
       {
         msgType1: true,
         msgType2: false,
-        msg: ['通話定額は使わない'],
+        msg: ["通話定額は使わない"],
         isRecommend: false,
         isSale: false,
       },
     ],
   },
-]);
+];
+const prev = () => {
+  data.trans_name = "prev";
+  data.current_slide--;
+  data.isDisabledN = false;
+  if (data.current_slide <= 0) {
+    data.current_slide = 0;
+    data.isDisabledP = true;
+  }
+};
+const next = () => {
+  data.trans_name = "next";
+  data.current_slide++;
+  data.isDisabledP = false;
+  if (data.current_slide >= list.length - 1) {
+    data.current_slide = list.length - 1;
+    data.isDisabledN = true;
+  }
+};
 </script>
 <template>
   <div class="slider-outer">
-    <transition :name="trans_name">
-      <div class="slider-inner" v-for="(value, idx) in list" v-if="current_slide == idx">
-          <Selection
-            :key="idx"
-            :value="value"
-          ></Selection>
+    <transition-group :name="data.trans_name">
+      <div class="slider-inner" :key="idx" v-for="(value, idx) in list">
+        <Selection
+          :key="idx"
+          v-if="data.current_slide === idx"
+          :value="value"
+        ></Selection>
       </div>
-    </transition>
+    </transition-group>
   </div>
   <div class="btn">
-    <button @click="prev()">prev</button>
-    <button @click="next()">next</button>
+    <button @click="prev()" :disabled="data.isDisabledP">prev</button>
+    <button @click="next()" :disabled="data.isDisabledN">next</button>
   </div>
 </template>
+<style scoped>
+.slider-outer {
+  position: relative;
+  width: 450px;
+  height: 450px;
+  overflow: hidden;
+  margin: 0 auto 20px;
+}
+.slider-inner {
+  position: absolute;
+  width: 450px;
+  height: 450px;
+}
+.btn {
+  position: relative;
+  margin: 0 auto 20px;
+  width: 90px;
+}
+.next-enter-active, .next-leave-active,
+.prev-enter-active, .prev-leave-active  {
+  transition: all .8s ease-out;
+}
+.next-enter {
+  transform: translateX(450px);
+}
+.next-enter-to {
+  transform: translateX(0);
+}
+.next-leave {
+  transform: translateX(0);
+}
+.next-leave-to {
+  transform: translateX(-450px);
+}
+.prev-enter {
+  transform: translateX(-450px);
+}
+.prev-enter-to {
+  transform: translateX(0);
+}
+.prev-leave {
+  transform: translateX(0);
+}
+.prev-leave-to {
+  transform: translateX(450px);
+}
+
+</style>

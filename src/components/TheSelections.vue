@@ -6,6 +6,7 @@ const data = reactive({
   trans_name: "next",
   current_slide: 0,
   isDisabledP: true,
+  isSelected: false,
 });
 const list = ref([
   {
@@ -98,24 +99,8 @@ const handleEvent = (newData) => {
   selectedItem.value.push(a);
   // 次の選択肢へ
   next();
-  // リストにisSelectedを格納
-  // データに格納している名前から配列が何番目かを特定
-  let title = a.que;
-  let num;
-  for (let i = 0; i < list.value.length; i++) {
-    if (list.value[i].title === title) {
-      num = i;
-    }
-  }
-  console.log(list.value[num])
-  let msg = a.ans;
-  let num2;
-  for (let i = 0; i < list.value.length; i++) {
-    if (list.value[i].msg === msg) {
-      num2 = i;
-    }
-  }
-  console.log(list.value[num].items[num2])
+  data.isSelected = true;
+  console.log(data.isSelected);
 };
 // 前の設問に戻る
 const prev = () => {
@@ -142,21 +127,32 @@ const next = () => {
     // 下にスライド
   }
 };
-// listにisSelected入れて、ボタン押したらtrue/false格納
 </script>
 <template>
   {{ selectedItem }}
-  <div class="slider-outer">
-    <transition-group :name="data.trans_name">
-      <div class="slider-inner" :key="idx" v-for="(value, idx) in list">
-        <Selection
-          :key="idx"
+  {{ data.current_slide }}
+  <div>
+    <transition-group
+      :name="data.trans_name"
+      tag="div"
+      class="slider-outer"
+    >
+      <template
+        v-for="(value, idx) in list"
+        :key="idx"
+      >
+        <div
           v-if="data.current_slide === idx"
-          :value="value"
-          @clickEvent="handleEvent"
-          :listIdx="idx"
-        ></Selection>
-      </div>
+        >
+          <Selection
+            class="slider-inner"
+            :class="{ selected: data.isSelected }"
+            :key="idx"
+            :value="value"
+            @clickEvent="handleEvent"
+          ></Selection>
+        </div>
+      </template>
     </transition-group>
   </div>
   <div class="btn">
@@ -164,16 +160,19 @@ const next = () => {
   </div>
 </template>
 <style scoped>
+.selection.selected i {
+  background-color: #bbb;
+}
 .slider-outer {
   position: relative;
   width: 450px;
-  height: 450px;
+  height: 500px;
   overflow: hidden;
   margin: 0 auto 20px;
 }
 .slider-inner {
   position: absolute;
-  width: 450px;
+  width: 500px;
   height: 450px;
 }
 .btn {
@@ -185,7 +184,7 @@ const next = () => {
 .next-leave-active,
 .prev-enter-active,
 .prev-leave-active {
-  transition: all 0.8s ease-out;
+  transition: all 8s ease-out;
 }
 .next-enter {
   transform: translateX(450px);

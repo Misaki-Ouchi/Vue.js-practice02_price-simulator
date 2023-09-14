@@ -2,20 +2,16 @@
 import { ref, reactive } from "vue";
 
 defineProps<{
-  isSelected: string;
   msgType1: boolean;
   msgType2: boolean;
   isRecommend: boolean;
   isSale: boolean;
 }>();
 
-// button選択で.selected .deselected付与
 </script>
 
 <template>
   <button
-    :class="{ selected: isSelected, deselected: !isSelected }"
-    @click="selectClick"
   >
     <div class="button-wrap">
       <!-- アイコン -->
@@ -59,22 +55,7 @@ defineProps<{
 b {
   font-weight: bold;
 }
-button {
-  position: relative;
-  cursor: pointer;
-  margin-bottom: 1rem;
-  border: 2px solid #bbb;
-  border-radius: 15px;
-  background-color: #eee;
-  z-index: 10;
-}
-button.selected {
-  border-color: rgb(255, 50, 180);
-  background-color: rgba(255, 50, 180, 0.1);
-}
-button.deselected i {
-  background-color: #bbb;
-}
+
 .button-wrap {
   display: flex;
   justify-content: space-between;

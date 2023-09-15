@@ -29,7 +29,7 @@ const data = reactive({
         :isSale="item.isSale"
         :data-value="item.value"
         :btnSelected="btnSelected"
-        @btnClick="$emit('clickEvent', { ans: item.value })"
+        @btnClick="$emit('clickEvent', { que: value.title, ans: item.value })"
       >
         <template #icon>
           <!-- <svg></svg> -->

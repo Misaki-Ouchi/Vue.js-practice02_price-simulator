@@ -2,6 +2,7 @@
 import HeaderItem from "./components/HeaderItem.vue";
 import TheSelections from "./components/TheSelections.vue";
 import Selection from "./components/Selection.vue";
+import ResultBox from "./components/ResultBox.vue";
 </script>
 
 <template>
@@ -12,6 +13,7 @@ import Selection from "./components/Selection.vue";
   <main>
     <div class="wrapper">
       <The-Selections />
+      <Result-Box />
     </div>
   </main>
 </template>
@@ -23,7 +25,8 @@ header {
   padding: 2rem;
 }
 .wrapper {
-  padding: 1rem;
+  max-width: 800px;
+  margin: auto;
 }
 
 .logo {

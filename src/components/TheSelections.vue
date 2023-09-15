@@ -7,7 +7,7 @@ const data = reactive({
   current_slide: 0,
   isDisabledP: true,
   sctSelected: false,
-  btnSelected: false
+  btnSelected: false,
 });
 const list = ref([
   {
@@ -20,7 +20,7 @@ const list = ref([
         isRecommend: false,
         isSale: false,
         isSelected: false,
-        value: '電話必要',
+        value: "電話必要",
       },
       {
         msgType1: true,
@@ -29,7 +29,7 @@ const list = ref([
         isRecommend: false,
         isSale: false,
         isSelected: false,
-        value: '電話必要',
+        value: "電話不要",
       },
     ],
   },
@@ -43,7 +43,7 @@ const list = ref([
         isRecommend: false,
         isSale: false,
         isSelected: false,
-        value: 'SIM',
+        value: "SIM",
       },
       {
         msgType1: true,
@@ -52,7 +52,7 @@ const list = ref([
         isRecommend: false,
         isSale: false,
         isSelected: false,
-        value: 'eSIM',
+        value: "eSIM",
       },
     ],
   },
@@ -68,7 +68,7 @@ const list = ref([
         prePrice: "500",
         salePrice: "90",
         isSelected: false,
-        value: '通話定額5分',
+        value: "通話定額5分",
       },
       {
         msgType1: false,
@@ -79,7 +79,7 @@ const list = ref([
         prePrice: "700",
         salePrice: "290",
         isSelected: false,
-        value: '通話定額10分',
+        value: "通話定額10分",
       },
       {
         msgType1: false,
@@ -90,7 +90,7 @@ const list = ref([
         prePrice: "1400",
         salePrice: "990",
         isSelected: false,
-        value: 'かけ放題',
+        value: "かけ放題",
       },
       {
         msgType1: true,
@@ -99,7 +99,7 @@ const list = ref([
         isRecommend: false,
         isSale: false,
         isSelected: false,
-        value: '通話定額は使わない',
+        value: "通話定額は使わない",
       },
     ],
   },
@@ -113,7 +113,7 @@ const list = ref([
         isRecommend: false,
         isSale: false,
         isSelected: false,
-        value: 'SMSを使う',
+        value: "SMSを使う",
       },
       {
         msgType1: true,
@@ -122,7 +122,7 @@ const list = ref([
         isRecommend: false,
         isSale: false,
         isSelected: false,
-        value: 'SMSは使わない',
+        value: "SMSは使わない",
       },
     ],
   },
@@ -136,7 +136,7 @@ const list = ref([
         isRecommend: false,
         isSale: false,
         isSelected: false,
-        value: 'データeSIMを使う',
+        value: "データeSIMを使う",
       },
       {
         msgType1: true,
@@ -145,7 +145,7 @@ const list = ref([
         isRecommend: false,
         isSale: false,
         isSelected: false,
-        value: 'データeSIMは使わない',
+        value: "データeSIMは使わない",
       },
     ],
   },
@@ -159,7 +159,7 @@ const list = ref([
         isRecommend: false,
         isSale: false,
         isSelected: false,
-        value: '2',
+        value: "2",
       },
       {
         msgType1: true,
@@ -168,7 +168,7 @@ const list = ref([
         isRecommend: true,
         isSale: false,
         isSelected: false,
-        value: '5',
+        value: "5",
       },
       {
         msgType1: true,
@@ -177,7 +177,7 @@ const list = ref([
         isRecommend: false,
         isSale: false,
         isSelected: false,
-        value: '10',
+        value: "10",
       },
       {
         msgType1: true,
@@ -186,7 +186,7 @@ const list = ref([
         isRecommend: false,
         isSale: false,
         isSelected: false,
-        value: '15',
+        value: "15",
       },
       {
         msgType1: true,
@@ -195,7 +195,7 @@ const list = ref([
         isRecommend: false,
         isSale: false,
         isSelected: false,
-        value: '20',
+        value: "20",
       },
     ],
   },
@@ -205,13 +205,27 @@ const selectedItem = ref([]);
 // ボタン選択イベント
 const handleEvent = (newData) => {
   // 格納用リストににデータ格納
-  let a = newData.ans;
+  let a = {
+    que: newData.que,
+    ans: newData.ans,
+  };
   selectedItem.value.push(a);
   // 選択されなかったボタンの色変更
-  data.sctSelected = true
-  // 選択された内容によって条件分岐
+  data.sctSelected = true;
+  // 選択された内容によって条件分岐（スライド数増）
+  if (a.ans === "電話不要") {
+    data.current_slide += 2;
+  }
+  if (a.ans === "SMSを使う") {
+    data.current_slide++;
+  }
+  if (a.que === "通話定額を使いますか？") {
+    data.current_slide += 2;
+  }
   // 次の選択肢へ
+  console.log(a.que);
   next();
+  console.log(data.current_slide);
 };
 // 前の設問に戻る
 const prev = () => {
@@ -281,7 +295,7 @@ const next = () => {
 .next-leave-active,
 .prev-enter-active,
 .prev-leave-active {
-  transition: all 0.8s ease-out;
+  transition: all 0.5s ease-out;
 }
 .next-enter-from {
   transform: translateX(450px);

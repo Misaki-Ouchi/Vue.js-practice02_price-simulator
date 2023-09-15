@@ -91,6 +91,7 @@ const list = ref([
 const selectedItem = ref([]);
 // ボタン選択イベント
 const handleEvent = (newData) => {
+  next();
   let a = {
     que: newData.que,
     ans: newData.ans,
@@ -98,7 +99,6 @@ const handleEvent = (newData) => {
   // 格納用リストににデータ格納
   selectedItem.value.push(a);
   // 次の選択肢へ
-  next();
   data.isSelected = true;
   console.log(data.isSelected);
 };
@@ -131,28 +131,17 @@ const next = () => {
 <template>
   {{ selectedItem }}
   {{ data.current_slide }}
-  <div>
-    <transition-group
-      :name="data.trans_name"
-      tag="div"
-      class="slider-outer"
-    >
-      <template
-        v-for="(value, idx) in list"
-        :key="idx"
-      >
-        <div
-          v-if="data.current_slide === idx"
-        >
-          <Selection
-            class="slider-inner"
-            :class="{ selected: data.isSelected }"
-            :key="idx"
-            :value="value"
-            @clickEvent="handleEvent"
-          ></Selection>
-        </div>
-      </template>
+  {{ data.trans_name }}
+  <div class="slider-outer">
+    <transition-group :name="data.trans_name" v-for="(value, idx) in list">
+      <div class="slider-inner" :key="idx" v-if="data.current_slide == idx">
+        <Selection
+          :key="idx"
+          :class="{ selected: data.isSelected }"
+          :value="value"
+          @clickEvent="handleEvent"
+        ></Selection>
+      </div>
     </transition-group>
   </div>
   <div class="btn">
@@ -166,14 +155,15 @@ const next = () => {
 .slider-outer {
   position: relative;
   width: 450px;
-  height: 500px;
+  height: 550px;
   overflow: hidden;
   margin: 0 auto 20px;
 }
 .slider-inner {
   position: absolute;
-  width: 500px;
-  height: 450px;
+  top: 0;
+  width: 450px;
+  height: 550px;
 }
 .btn {
   position: relative;
@@ -184,27 +174,27 @@ const next = () => {
 .next-leave-active,
 .prev-enter-active,
 .prev-leave-active {
-  transition: all 8s ease-out;
+  transition: all 0.8s ease-out;
 }
-.next-enter {
+.next-enter-from {
   transform: translateX(450px);
 }
 .next-enter-to {
-  transform: translateX(0);
+  transform: translateX(0px);
 }
-.next-leave {
+.next-leave-from {
   transform: translateX(0);
 }
 .next-leave-to {
   transform: translateX(-450px);
 }
-.prev-enter {
+.prev-enter-from {
   transform: translateX(-450px);
 }
 .prev-enter-to {
   transform: translateX(0);
 }
-.prev-leave {
+.prev-leave-from {
   transform: translateX(0);
 }
 .prev-leave-to {

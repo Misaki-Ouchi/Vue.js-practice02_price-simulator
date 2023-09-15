@@ -2,14 +2,12 @@
 import { ref, reactive } from "vue";
 
 defineProps<{
-  dataList: {}
+  showTelPlan: boolean
 }>();
 
-const data = reactive({
-  
-});
 </script>
 <template>
+{{selectedItem}}
   <div class="result">
     <div class="result-wrap">
       <h2>診断結果</h2>
@@ -27,14 +25,14 @@ const data = reactive({
             <div class="campaign-item">
               <span>データ容量</span>
               <div class="campaign-data">
-                <p>2</p>
+                <p><slot name="dataVol"></slot></p>
                 <span>GB</span>
               </div>
             </div>
             <div class="campaign-item">
               <span>月額</span>
               <div class="campaign-data cost-data">
-                <p>940</p>
+                <p><slot name="totalCost"></slot></p>
                 <span>円</span>
               </div>
             </div>
@@ -47,12 +45,12 @@ const data = reactive({
           <div class="detail-number"><div>1</div></div>
           <div class="detail-plans">
             <div class="detail-plan1">
-              <p>音声SIM2ギガプラン</p>
-              <p>850円</p>
+              <p><slot name="dataPlan"></slot>(音声SIM2ギガプラン)</p>
+              <p><slot name="dataCost"></slot>(850)円</p>
             </div>
-            <div class="detail-plan2">
-              <p>通話定額 5分+</p>
-              <p>90円</p>
+            <div v-show="showTelPlan" class="detail-plan2">
+              <p><slot name="telPlan"></slot>(通話定額 5分+)</p>
+              <p><slot name="telCost"></slot>(90)円</p>
             </div>
           </div>
           <div class="btn-wrap"><button class="closeBtn">×</button></div>
@@ -81,7 +79,7 @@ h2 {
 .result-box {
   position: relative;
   padding: 0.5rem;
-  background-color: #fff;
+  background-color: #ffe;
 }
 .campaign {
   width: 80%;
@@ -170,8 +168,8 @@ h2 {
   display: flex;
   justify-content: space-between;
 }
-.detail-plan1 {
-  border-bottom: 1px dotted #b74;
+.detail-plan2 {
+  border-top: 1px dotted #b74;
 }
 .detail-plan1 p,
 .detail-plan2 p {

@@ -1,13 +1,16 @@
 <script setup lang="ts">
 import { ref, reactive } from "vue";
 import Selection from "./Selection.vue";
+import ResultBox from "./ResultBox.vue";
+
+// defineEmits(["selectedItem"]);
 
 const data = reactive({
-  trans_name: "next",
-  current_slide: 0,
-  isDisabledP: true,
-  sctSelected: false,
-  btnSelected: false,
+  trans_name: "next", // スライド用の識別名
+  current_slide: 0, // 表示中のスライド
+  isDisabledP: true, // 前に戻るボタンdisabled
+  sctSelected: false, // 設問(済)の選択肢色変更
+  btnSelected: false, // 選択したボタン色変更
 });
 const list = ref([
   {
@@ -68,7 +71,7 @@ const list = ref([
         prePrice: "500",
         salePrice: "90",
         isSelected: false,
-        value: "通話定額5分",
+        value: "通話定額 5分+",
       },
       {
         msgType1: false,
@@ -79,7 +82,7 @@ const list = ref([
         prePrice: "700",
         salePrice: "290",
         isSelected: false,
-        value: "通話定額10分",
+        value: "通話定額 10分+",
       },
       {
         msgType1: false,
@@ -90,7 +93,7 @@ const list = ref([
         prePrice: "1400",
         salePrice: "990",
         isSelected: false,
-        value: "かけ放題",
+        value: "かけ放題+",
       },
       {
         msgType1: true,
@@ -200,8 +203,16 @@ const list = ref([
     ],
   },
 ]);
-// 選択内容格納リスト（仮）
-const selectedItem = ref([]);
+// 選択内容格納リスト
+const selectedItem = ref({
+  dataVol: "-", // データ容量
+  totalCost: "-", // 合計月額
+  dataPlan: "", // プラン名: (音声SIM/eSIM)/(SMS)/(データ(eSIM))〇ギガプラン
+  dataCost: "", // プラン金額
+  showTelPlan: false, // 通話定額プラン有無
+  telPlan: "", // 通話定額プラン名
+  telCost: "", // 通話定額プラン金額
+});
 // ボタン選択イベント
 const handleEvent = (newData) => {
   // 格納用リストににデータ格納
@@ -254,7 +265,6 @@ const next = () => {
 };
 </script>
 <template>
-  {{ selectedItem }}
   <div class="slider-outer">
     <transition-group :name="data.trans_name" v-for="(value, idx) in list">
       <div class="slider-inner" :key="idx" v-show="data.current_slide == idx">
@@ -271,6 +281,17 @@ const next = () => {
   <div class="btn">
     <button @click="prev()" :disabled="data.isDisabledP">前の設問に戻る</button>
   </div>
+  <ResultBox
+    :selectedItem="selectedItem"
+    :showTelPlan="selectedItem.showTelPlan"
+  >
+    <template #dataVol>{{ selectedItem.dataVol }}</template>
+    <template #totalCost>{{ selectedItem.totalCost }}</template>
+    <template #dataPlan>{{ selectedItem.dataPlan }}</template>
+    <template #dataCost>{{ selectedItem.dataCost }}</template>
+    <template #telPlan>{{ selectedItem.telPlan }}</template>
+    <template #telCost>{{ selectedItem.telCost }}</template>
+  </ResultBox>
 </template>
 <style scoped>
 .slider-outer {

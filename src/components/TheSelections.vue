@@ -6,7 +6,8 @@ const data = reactive({
   trans_name: "next",
   current_slide: 0,
   isDisabledP: true,
-  deSelected: false,
+  sctSelected: false,
+  btnSelected: false
 });
 const list = ref([
   {
@@ -19,6 +20,7 @@ const list = ref([
         isRecommend: false,
         isSale: false,
         isSelected: false,
+        value: '電話必要',
       },
       {
         msgType1: true,
@@ -27,6 +29,7 @@ const list = ref([
         isRecommend: false,
         isSale: false,
         isSelected: false,
+        value: '電話必要',
       },
     ],
   },
@@ -40,6 +43,7 @@ const list = ref([
         isRecommend: false,
         isSale: false,
         isSelected: false,
+        value: 'SIM',
       },
       {
         msgType1: true,
@@ -48,6 +52,7 @@ const list = ref([
         isRecommend: false,
         isSale: false,
         isSelected: false,
+        value: 'eSIM',
       },
     ],
   },
@@ -63,6 +68,7 @@ const list = ref([
         prePrice: "500",
         salePrice: "90",
         isSelected: false,
+        value: '通話定額5分',
       },
       {
         msgType1: false,
@@ -73,6 +79,7 @@ const list = ref([
         prePrice: "700",
         salePrice: "290",
         isSelected: false,
+        value: '通話定額10分',
       },
       {
         msgType1: false,
@@ -83,6 +90,7 @@ const list = ref([
         prePrice: "1400",
         salePrice: "990",
         isSelected: false,
+        value: 'かけ放題',
       },
       {
         msgType1: true,
@@ -91,6 +99,103 @@ const list = ref([
         isRecommend: false,
         isSale: false,
         isSelected: false,
+        value: '通話定額は使わない',
+      },
+    ],
+  },
+  {
+    title: "SMSを使いますか？",
+    items: [
+      {
+        msgType1: true,
+        msgType2: false,
+        msg: ["SMSを使う"],
+        isRecommend: false,
+        isSale: false,
+        isSelected: false,
+        value: 'SMSを使う',
+      },
+      {
+        msgType1: true,
+        msgType2: false,
+        msg: ["SMSは使わない"],
+        isRecommend: false,
+        isSale: false,
+        isSelected: false,
+        value: 'SMSは使わない',
+      },
+    ],
+  },
+  {
+    title: "データeSIMを使いますか？",
+    items: [
+      {
+        msgType1: true,
+        msgType2: false,
+        msg: ["データeSIMを使う"],
+        isRecommend: false,
+        isSale: false,
+        isSelected: false,
+        value: 'データeSIMを使う',
+      },
+      {
+        msgType1: true,
+        msgType2: false,
+        msg: ["データeSIMは使わない"],
+        isRecommend: false,
+        isSale: false,
+        isSelected: false,
+        value: 'データeSIMは使わない',
+      },
+    ],
+  },
+  {
+    title: "データ通信は毎月どのくらいご利用ですか？",
+    items: [
+      {
+        msgType1: true,
+        msgType2: false,
+        msg: ["家のWi-Fi利用が中心", "外出先でネットはあまり使わない"],
+        isRecommend: false,
+        isSale: false,
+        isSelected: false,
+        value: '2',
+      },
+      {
+        msgType1: true,
+        msgType2: false,
+        msg: ["外出先のSNS利用やネット閲覧が中心"],
+        isRecommend: true,
+        isSale: false,
+        isSelected: false,
+        value: '5',
+      },
+      {
+        msgType1: true,
+        msgType2: false,
+        msg: ["外出先でゲームアプリを使う"],
+        isRecommend: false,
+        isSale: false,
+        isSelected: false,
+        value: '10',
+      },
+      {
+        msgType1: true,
+        msgType2: false,
+        msg: ["外出先で動画を視聴しネットもよく使う"],
+        isRecommend: false,
+        isSale: false,
+        isSelected: false,
+        value: '15',
+      },
+      {
+        msgType1: true,
+        msgType2: false,
+        msg: ["外出先でギガ（データ量）を気にせず使いたい"],
+        isRecommend: false,
+        isSale: false,
+        isSelected: false,
+        value: '20',
       },
     ],
   },
@@ -100,13 +205,11 @@ const selectedItem = ref([]);
 // ボタン選択イベント
 const handleEvent = (newData) => {
   // 格納用リストににデータ格納
-  let a = {
-    que: newData.que,
-    ans: newData.ans
-  };
+  let a = newData.ans;
   selectedItem.value.push(a);
   // 選択されなかったボタンの色変更
-  data.deSelected = true
+  data.sctSelected = true
+  // 選択された内容によって条件分岐
   // 次の選択肢へ
   next();
 };
@@ -138,15 +241,14 @@ const next = () => {
 </script>
 <template>
   {{ selectedItem }}
-  {{ data.current_slide }}
-  {{ data.trans_name }}
   <div class="slider-outer">
     <transition-group :name="data.trans_name" v-for="(value, idx) in list">
       <div class="slider-inner" :key="idx" v-show="data.current_slide == idx">
         <Selection
           :key="idx"
-          :class="{ deSelected: data.deSelected }"
           :value="value"
+          :btnSelected="data.btnSelected"
+          :sctSelected="data.sctSelected"
           @clickEvent="handleEvent"
         ></Selection>
       </div>
@@ -157,9 +259,6 @@ const next = () => {
   </div>
 </template>
 <style scoped>
-.selection.deSelected i {
-  background-color: #bbb;
-}
 .slider-outer {
   position: relative;
   width: 450px;

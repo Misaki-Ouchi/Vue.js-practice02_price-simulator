@@ -6,29 +6,29 @@ defineProps<{
   msgType2: boolean;
   isRecommend: boolean;
   isSale: boolean;
+  btnSelected: boolean;
 }>();
-const data = reactive({
-  isClicked: false,
-});
+defineEmits(["btnClick"]);
 </script>
 
 <template>
   <button
-    @click="data.isClicked = true"
-    :class="{ selected: data.isClicked }">
+    @click="btnSelected = true, $emit('btnClick')"
+    :class="{ btnSelected: btnSelected }">
     <div class="button-wrap">
       <!-- アイコン -->
       <i>
         <slot name="icon"></slot>
       </i>
-      <!-- 中身 1行Ver.-->
+      <!-- 中身 太字無しVer.-->
       <p class="details" v-if="msgType1">
-        <span class="detail selected"><slot name="detail"></slot></span>
+        <span class="detail"><slot name="detail"></slot></span>
         <span class="detail-sub"><slot name="detail-sub"></slot></span>
+        <span class="detail-sub2"><slot name="detail-sub"></slot></span>
       </p>
-      <!-- 中身 2行Ver.-->
+      <!-- 中身 1行目太字Ver.-->
       <p class="details" v-if="msgType2">
-        <span class="detail selected"
+        <span class="detail"
           ><b><slot name="detail"></slot></b><br
         /></span>
         <span class="detail-sub"><slot name="detail-sub"></slot></span>
@@ -64,14 +64,10 @@ button {
   background-color: #eee;
   z-index: 10;
 }
-button.selected {
-  border-color: rgb(255, 50, 180);
-  background-color: rgba(255, 50, 180, 0.1);
-}
+
 b {
   font-weight: bold;
 }
-
 .button-wrap {
   display: flex;
   justify-content: space-between;

@@ -5,35 +5,38 @@ import NormalButton from "./ButtonNormal.vue";
 
 defineProps<{
   value: {};
+  btnSelected: boolean;
+  sctSelected: boolean;
 }>();
 defineEmits(["clickEvent"]);
+
 const data = reactive({
-  deSelected: false,
-  isClicked: false
+  sctSelected: false
   })
-const getValue = (event) => {
-    console.log(event.target.dataset.value)
-}
 
 </script>
 <template>
   <Question>{{ value.title }}</Question>
-  <div class="selection">
+  <div
+  class="selection"
+  :class="{ sctSelected: sctSelected }"
+  >
     <template v-for="(item, idx) in value.items">
       <Normal-Button
         :msgType1="item.msgType1"
         :msgType2="item.msgType2"
         :isRecommend="item.isRecommend"
         :isSale="item.isSale"
-        :class="{ deSelected: data.deSelected }"
-        :data-value="item.msg[0]"
-        @click="data.deSelected = true, getValue($event), $emit('clickEvent', { que: value.title, ans: item.msg[0] })"
+        :data-value="item.value"
+        :btnSelected="btnSelected"
+        @btnClick="$emit('clickEvent', { ans: item.value })"
       >
         <template #icon>
           <!-- <svg></svg> -->
         </template>
         <template #detail>{{ item.msg[0] }}</template>
         <template #detail-sub>{{ item.msg[1] }}</template>
+        <template #detail-sub2>{{ item.msg[2] }}</template>
         <template #recommend></template>
         <template #sale></template>
         <template #prePrice>税込{{ item.prePrice }}円</template>
@@ -43,9 +46,23 @@ const getValue = (event) => {
   </div>
 </template>
 
-<style scoped>
+<style>
 .selection {
   display: flex;
   flex-direction: column;
+}
+button.btnSelected {
+  border-color: rgb(255, 50, 180);
+  background-color: rgba(255, 50, 180, 0.1);
+}
+.selection.sctSelected button i {
+  background-color: #bbb;
+}
+.selection.sctSelected button.btnSelected i{
+  background-color: #faa;
+}
+.selection.sctSelected button.btnSelected .details .detail{
+  font-weight: bold;
+  color: rgb(255, 50, 180);
 }
 </style>

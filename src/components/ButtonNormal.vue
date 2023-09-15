@@ -7,12 +7,15 @@ defineProps<{
   isRecommend: boolean;
   isSale: boolean;
 }>();
-
+const data = reactive({
+  isClicked: false,
+});
 </script>
 
 <template>
   <button
-  >
+    @click="data.isClicked = true"
+    :class="{ selected: data.isClicked }">
     <div class="button-wrap">
       <!-- アイコン -->
       <i>
@@ -52,6 +55,19 @@ defineProps<{
 </template>
 
 <style scoped>
+button {
+  position: relative;
+  cursor: pointer;
+  margin-bottom: 1rem;
+  border: 2px solid #bbb;
+  border-radius: 15px;
+  background-color: #eee;
+  z-index: 10;
+}
+button.selected {
+  border-color: rgb(255, 50, 180);
+  background-color: rgba(255, 50, 180, 0.1);
+}
 b {
   font-weight: bold;
 }

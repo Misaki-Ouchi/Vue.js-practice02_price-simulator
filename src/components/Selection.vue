@@ -5,9 +5,16 @@ import NormalButton from "./ButtonNormal.vue";
 
 defineProps<{
   value: {};
-  isSelected: boolean;
 }>();
 defineEmits(["clickEvent"]);
+const data = reactive({
+  deSelected: false,
+  isClicked: false
+  })
+const getValue = (event) => {
+    console.log(event.target.dataset.value)
+}
+
 </script>
 <template>
   <Question>{{ value.title }}</Question>
@@ -18,9 +25,9 @@ defineEmits(["clickEvent"]);
         :msgType2="item.msgType2"
         :isRecommend="item.isRecommend"
         :isSale="item.isSale"
-        :isSelected="isSelected"
-        :class="{ selected: isSelected }"
-        @click="$emit('clickEvent', { que: value.title, ans: item.msg[0] })"
+        :class="{ deSelected: data.deSelected }"
+        :data-value="item.msg[0]"
+        @click="data.deSelected = true, getValue($event), $emit('clickEvent', { que: value.title, ans: item.msg[0] })"
       >
         <template #icon>
           <!-- <svg></svg> -->
@@ -40,19 +47,5 @@ defineEmits(["clickEvent"]);
 .selection {
   display: flex;
   flex-direction: column;
-}
-button {
-  position: relative;
-  cursor: pointer;
-  margin-bottom: 1rem;
-  border: 2px solid #bbb;
-  border-radius: 15px;
-  background-color: #eee;
-  z-index: 10;
-}
-
-button.selected {
-  border-color: rgb(255, 50, 180);
-  background-color: rgba(255, 50, 180, 0.1);
 }
 </style>

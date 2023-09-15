@@ -6,7 +6,7 @@ const data = reactive({
   trans_name: "next",
   current_slide: 0,
   isDisabledP: true,
-  isSelected: false,
+  deSelected: false,
 });
 const list = ref([
   {
@@ -18,6 +18,7 @@ const list = ref([
         msg: ["必要", "（お乗り換えの方はこちら）"],
         isRecommend: false,
         isSale: false,
+        isSelected: false,
       },
       {
         msgType1: true,
@@ -25,6 +26,7 @@ const list = ref([
         msg: ["不要"],
         isRecommend: false,
         isSale: false,
+        isSelected: false,
       },
     ],
   },
@@ -37,6 +39,7 @@ const list = ref([
         msg: ["SIMカード", "（カード型）"],
         isRecommend: false,
         isSale: false,
+        isSelected: false,
       },
       {
         msgType1: true,
@@ -44,6 +47,7 @@ const list = ref([
         msg: ["eSIM※"],
         isRecommend: false,
         isSale: false,
+        isSelected: false,
       },
     ],
   },
@@ -58,6 +62,7 @@ const list = ref([
         isSale: true,
         prePrice: "500",
         salePrice: "90",
+        isSelected: false,
       },
       {
         msgType1: false,
@@ -67,6 +72,7 @@ const list = ref([
         isSale: true,
         prePrice: "700",
         salePrice: "290",
+        isSelected: false,
       },
       {
         msgType1: false,
@@ -76,6 +82,7 @@ const list = ref([
         isSale: true,
         prePrice: "1400",
         salePrice: "990",
+        isSelected: false,
       },
       {
         msgType1: true,
@@ -83,6 +90,7 @@ const list = ref([
         msg: ["通話定額は使わない"],
         isRecommend: false,
         isSale: false,
+        isSelected: false,
       },
     ],
   },
@@ -91,16 +99,16 @@ const list = ref([
 const selectedItem = ref([]);
 // ボタン選択イベント
 const handleEvent = (newData) => {
-  next();
+  // 格納用リストににデータ格納
   let a = {
     que: newData.que,
-    ans: newData.ans,
+    ans: newData.ans
   };
-  // 格納用リストににデータ格納
   selectedItem.value.push(a);
+  // 選択されなかったボタンの色変更
+  data.deSelected = true
   // 次の選択肢へ
-  data.isSelected = true;
-  console.log(data.isSelected);
+  next();
 };
 // 前の設問に戻る
 const prev = () => {
@@ -134,10 +142,10 @@ const next = () => {
   {{ data.trans_name }}
   <div class="slider-outer">
     <transition-group :name="data.trans_name" v-for="(value, idx) in list">
-      <div class="slider-inner" :key="idx" v-if="data.current_slide == idx">
+      <div class="slider-inner" :key="idx" v-show="data.current_slide == idx">
         <Selection
           :key="idx"
-          :class="{ selected: data.isSelected }"
+          :class="{ deSelected: data.deSelected }"
           :value="value"
           @clickEvent="handleEvent"
         ></Selection>
@@ -149,7 +157,7 @@ const next = () => {
   </div>
 </template>
 <style scoped>
-.selection.selected i {
+.selection.deSelected i {
   background-color: #bbb;
 }
 .slider-outer {

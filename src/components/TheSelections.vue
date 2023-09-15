@@ -208,35 +208,102 @@ const selectedItem = ref({
   dataVol: "-", // データ容量
   totalCost: "-", // 合計月額
   dataPlan: "", // プラン名: (音声SIM/eSIM)/(SMS)/(データ(eSIM))〇ギガプラン
-  dataCost: "", // プラン金額
+  dataCost: 0, // プラン金額
   showTelPlan: false, // 通話定額プラン有無
   telPlan: "", // 通話定額プラン名
   telCost: "", // 通話定額プラン金額
 });
+const aaa = ref([]);
+
 // ボタン選択イベント
 const handleEvent = (newData) => {
-  // 格納用リストににデータ格納
+  // データ格納
   let a = {
     que: newData.que,
     ans: newData.ans,
   };
-  selectedItem.value.push(a);
-  // 選択されなかったボタンの色変更
-  data.sctSelected = true;
-  // 選択された内容によって条件分岐（スライド数増）
+  let item = selectedItem.value;
+  aaa.value.push(a);
+  // 選択された内容によって条件分岐（スライド数増）& 選択内容格納リストの中身更新
+  // １．電話必要か(音声 + SIM/eSIM)
+  if (a.ans === "電話必要") {
+    item.dataPlan = "音声";
+  }
   if (a.ans === "電話不要") {
     data.current_slide += 2;
   }
-  if (a.ans === "SMSを使う") {
-    data.current_slide++;
+  // ２．SIM/eSIM
+  if (a.que === "ご利用になるSIMの形状を教えてください") {
+    item.dataPlan += a.ans;
   }
+  // ３．通話定額
   if (a.que === "通話定額を使いますか？") {
     data.current_slide += 2;
+    item.showTelPlan = true;
+    item.telPlan = a.ans;
+    // 選択リストの金額を取得
+    let list = list.value.items;
+    for (let i = 0; i < list.length; i++) {
+      if (a.ans === list[i].salePrice) {
+        item.telCost = list[i].salePrice;
+      }
+    }
   }
+  if (a.ans === "通話定額は使わない") {
+    item.showTelPlan = false;
+  }
+  // ４．SMS使うか
+  if (a.ans === "SMSを使う") {
+    data.current_slide++;
+    item.dataPlan = "SMS";
+  }
+  // ５．データeSIM使うか
+  if (a.que === "データeSIMを使いますか？") {
+    item.dataPlan = "データ";
+    if (a.ans === "データeSIMを使う") {
+      item.dataPlan = "eSIM";
+    }
+  }
+  // ６．使用ギガ容量
+  if (a.que === "データ通信は毎月どのくらいご利用ですか？") {
+    item.dataVol = a.ans;
+    item.dataPlan += a.ans;
+  }
+  if (a.ans === "2") {
+    item.dataCost += 740;
+    if (item.dataPlan === "SMS") {
+      item.dataCost += 80;
+    }
+  }
+  if (a.ans === "5") {
+    item.dataCost += 900;
+    if (item.dataPlan === "SMS") {
+      item.dataCost += 70;
+    }
+  }
+  if (a.ans === "10") {
+    item.dataCost += 1400;
+    if (item.dataPlan === "SMS") {
+      item.dataCost += 70;
+    }
+  }
+  if (a.ans === "15") {
+    item.dataCost += 1730;
+    if (item.dataPlan === "SMS") {
+      item.dataCost += 50;
+    }
+  }
+  if (a.ans === "20") {
+    item.dataCost += 1950;
+    if (item.dataPlan === "SMS") {
+      item.dataCost += 30;
+    }
+  }
+
   // 次の選択肢へ
-  console.log(a.que);
   next();
-  console.log(data.current_slide);
+  // 選択されなかったボタンの色変更
+  data.sctSelected = true;
 };
 // 前の設問に戻る
 const prev = () => {
@@ -265,6 +332,7 @@ const next = () => {
 };
 </script>
 <template>
+  {{ aaa }}
   <div class="slider-outer">
     <transition-group :name="data.trans_name" v-for="(value, idx) in list">
       <div class="slider-inner" :key="idx" v-show="data.current_slide == idx">

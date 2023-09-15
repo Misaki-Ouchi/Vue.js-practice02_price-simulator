@@ -45,12 +45,12 @@ defineProps<{
           <div class="detail-number"><div>1</div></div>
           <div class="detail-plans">
             <div class="detail-plan1">
-              <p><slot name="dataPlan"></slot>(音声SIM2ギガプラン)</p>
-              <p><slot name="dataCost"></slot>(850)円</p>
+              <p><slot name="dataPlan"></slot>ギガプラン</p>
+              <p><slot name="dataCost"></slot>円</p>
             </div>
             <div v-show="showTelPlan" class="detail-plan2">
-              <p><slot name="telPlan"></slot>(通話定額 5分+)</p>
-              <p><slot name="telCost"></slot>(90)円</p>
+              <p><slot name="telPlan"></slot></p>
+              <p><slot name="telCost"></slot>円</p>
             </div>
           </div>
           <div class="btn-wrap"><button class="closeBtn">×</button></div>

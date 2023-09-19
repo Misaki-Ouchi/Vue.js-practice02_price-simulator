@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import { ref, reactive } from "vue";
+import { ref, reactive, onMounted } from "vue";
 import Selection from "./Selection.vue";
 import ResultBox from "./ResultBox.vue";
-
-// defineEmits(["selectedItem"]);
 
 const data = reactive({
   trans_name: "next", // スライド用の識別名
@@ -15,7 +13,13 @@ const data = reactive({
   resultsShow: false, // 結果表示/非表示
   isDisOpenBtn: true, // 内訳ボタンdisabled
   showDetail: false, // 結果の内訳表示/非表示
+  elm: "", // リセット後スクロール位置取得用要素
+  h: "", // リセット後スクロール位置
 });
+onMounted(() => {
+  data.elm = document.querySelector("#question");
+  data.h = data.elm.getBoundingClientRect().top + window.scrollY
+})
 const list = ref([
   {
     title: "電話番号（090等）は必要ですか？",
@@ -364,18 +368,12 @@ const resetEvent = () => {
   };
   newList.value = [];
   data.showDetail = false;
-  data.isDisOpenBtn = true
+  data.isDisOpenBtn = true;
   // 最初の選択肢に戻る
   data.trans_name = "prev";
   data.current_slide = 0;
   // スクロール
-  let elm = document.querySelector("#question");
-  let s = window.scrollY;
-  scrollTo({ top: s, behavior: "smooth" });
-  let h = elm.getBoundingClientRect().top
-  scrollTo({ top: h, behavior: "smooth" });
-  console.log(elm, h)
-  console.log(window.pageYOffset)
+  scrollTo({ top: data.h, behavior: "smooth" });
 };
 </script>
 <template>
@@ -395,7 +393,6 @@ const resetEvent = () => {
     <button @click="prev()" :disabled="data.isDisabledP">前の設問に戻る</button>
   </div>
   <ResultBox
-    :selectedItem="selectedItem"
     :showTelPlan="selectedItem.showTelPlan"
     :isDisOpenBtn="data.isDisOpenBtn"
     :showDetail="data.showDetail"

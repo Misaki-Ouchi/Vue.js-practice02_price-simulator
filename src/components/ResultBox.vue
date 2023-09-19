@@ -5,13 +5,11 @@ defineProps<{
   showTelPlan: boolean;
   isDisOpenBtn: boolean;
   showDetail: boolean;
-  selectedItem: {};
 }>();
 defineEmits(["resetClick", "openBtnClick"]);
 
 </script>
 <template>
-  {{ selectedItem }}
   <div id="result" class="result">
     <div class="result-wrap">
       <h2>診断結果</h2>

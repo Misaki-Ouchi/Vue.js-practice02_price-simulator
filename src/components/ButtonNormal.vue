@@ -20,14 +20,20 @@ defineEmits(["btnClick"]);
       <i>
         <slot name="icon"></slot>
       </i>
-      <!-- 中身 太字無しVer.-->
+      <!-- 中身 太字・改行無しVer.-->
       <p class="details" v-if="msgType1">
         <span class="detail"><slot name="detail"></slot></span>
         <span class="detail-sub"><slot name="detail-sub"></slot></span>
-        <span class="detail-sub2"><slot name="detail-sub"></slot></span>
       </p>
       <!-- 中身 1行目太字Ver.-->
       <p class="details" v-if="msgType2">
+        <span class="detail"
+          ><b><slot name="detail"></slot></b><br
+        /></span>
+        <span class="detail-sub"><slot name="detail-sub"></slot></span>
+      </p>
+      <!-- 中身 改行のみVer.-->
+      <p class="details" v-if="msgType3">
         <span class="detail"
           ><b><slot name="detail"></slot></b><br
         /></span>

@@ -177,7 +177,8 @@ const list = ref([
       {
         msgType1: true,
         msgType2: false,
-        msg: ["家のWi-Fi利用が中心", "外出先でネットはあまり使わない"],
+        msgType3: true,
+        msg: ["家のWi-Fi利用が中心", "（外出先でネットはあまり使わない）"],
         isRecommend: false,
         isSale: false,
         isSelected: false,

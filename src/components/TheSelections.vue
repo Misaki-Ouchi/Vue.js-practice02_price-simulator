@@ -12,13 +12,24 @@ const data = reactive({
   btnSelected: false, // 選択したボタン色変更
   resultsShow: false, // 結果表示/非表示
   isDisOpenBtn: true, // 内訳ボタンdisabled
-  // showDetail: false, // 結果の内訳表示/非表示
   elm: "", // リセット後スクロール位置取得用要素
   h: "", // リセット後スクロール位置
+  openBtn: "", // 内訳ボタンDOM
+  resultDetail: "", // 結果の内訳DOM
+  detailH: "", // 結果の内訳DOMの高さ
+  resultBox: "", // 結果DOM
+  resultBoxH: "", // 結果DOMの高さ
 });
 onMounted(() => {
   data.elm = document.querySelector("#question");
   data.h = data.elm.getBoundingClientRect().top + window.scrollY;
+  data.openBtn = document.querySelector(".openBtn");
+  data.resultDetail = document.querySelector(".resultDetail");
+  data.detailH = data.resultDetail.clientHeight
+  data.resultDetail.style.transform = `translateY(-${data.detailH + 2}px)`
+  data.resultBox = document.querySelector(".result-box")
+  data.resultBoxH = data.resultBox.clientHeight
+  data.resultBox.style.height = `calc(${data.resultBoxH}px - ${data.detailH}px)`
 });
 const list = ref([
   {
@@ -355,11 +366,15 @@ const next = () => {
 // 内訳クリック
 const openBtnEvent = () => {
   // data.showDetail = !data.showDetail;
-  let openBtn = document.querySelector(".openBtn");
-  openBtn.classList.toggle("opened");
-  let resultDetail = document.querySelector(".resultDetail");
-  console.log(resultDetail)
-  resultDetail.classList.toggle("opened");
+  data.openBtn.classList.toggle("opened");
+  data.resultDetail.classList.toggle("opened");
+  if (data.resultDetail.classList.contains("opened")) {
+    data.resultDetail.style.transform = "translateY(0)"
+    data.resultBox.style.height = `${data.resultBoxH}px`
+  } else {
+    data.resultDetail.style.transform = `translateY(-${data.detailH + 2}px)`
+    data.resultBox.style.height = `calc(${data.resultBoxH}px - ${data.detailH}px)`
+  }
 };
 // リセットイベント
 const resetEvent = () => {
@@ -373,8 +388,9 @@ const resetEvent = () => {
     telCost: "",
   };
   newList.value = [];
-  // data.showDetail = false;
   data.isDisOpenBtn = true;
+    data.openBtn.classList.remove("opened");
+  data.resultDetail.classList.remove("opened");
   // 最初の選択肢に戻る
   data.trans_name = "prev";
   data.current_slide = 0;

@@ -7,41 +7,47 @@ defineProps<{
   // showDetail: boolean;
 }>();
 defineEmits(["resetClick", "openBtnClick"]);
-
 </script>
 <template>
   <div id="result" class="result">
     <div class="result-wrap">
       <h2>診断結果</h2>
       <div class="result-box">
-        <div class="campaign">
-          <p class="campaign-title">キャンペーン適用で</p>
-          <div class="campaign-box">
-            <div class="campaign-item">
-              <span>回線数</span>
-              <div class="campaign-data">
-                <p>1</p>
-                <span>回線</span>
+        <div class="campaigns">
+          <div class="campaign">
+            <p class="campaign-title">キャンペーン適用で</p>
+            <div class="campaign-box">
+              <div class="campaign-item">
+                <span>回線数</span>
+                <div class="campaign-data">
+                  <p>1</p>
+                  <span>回線</span>
+                </div>
               </div>
-            </div>
-            <div class="campaign-item">
-              <span>データ容量</span>
-              <div class="campaign-data">
-                <p><slot name="dataVol"></slot></p>
-                <span>GB</span>
+              <div class="campaign-item">
+                <span>データ容量</span>
+                <div class="campaign-data">
+                  <p><slot name="dataVol"></slot></p>
+                  <span>GB</span>
+                </div>
               </div>
-            </div>
-            <div class="campaign-item">
-              <span>月額</span>
-              <div class="campaign-data cost-data">
-                <p><slot name="totalCost"></slot></p>
-                <span>円</span>
+              <div class="campaign-item">
+                <span>月額</span>
+                <div class="campaign-data cost-data">
+                  <p><slot name="totalCost"></slot></p>
+                  <span>円</span>
+                </div>
               </div>
             </div>
           </div>
+          <!-- /.campaign -->
         </div>
-        <!-- /.campaign -->
-        <button @click="$emit('openBtnClick')" class="openBtn" :disabled="isDisOpenBtn">
+        <!-- /.campaigns -->
+        <button
+          @click="$emit('openBtnClick')"
+          class="openBtn"
+          :disabled="isDisOpenBtn"
+        >
           内訳
         </button>
         <div class="resultDetail">
@@ -58,9 +64,7 @@ defineEmits(["resetClick", "openBtnClick"]);
             </div>
           </div>
           <div class="btn-wrap">
-            <button @click="$emit('resetClick')" class="resetBtn">
-              ×
-            </button>
+            <button @click="$emit('resetClick')" class="resetBtn">×</button>
           </div>
         </div>
         <!-- /.resultDetail -->
@@ -76,6 +80,8 @@ defineEmits(["resetClick", "openBtnClick"]);
   background-color: #b74;
   padding: 1rem;
   text-align: center;
+  height: fit-content;
+  overflow: hidden;
 }
 h2 {
   color: #fff;
@@ -88,9 +94,13 @@ h2 {
   position: relative;
   padding: 0.5rem;
   background-color: #ffe;
+  transition: .4s;
 }
-.campaign {
-  width: 80%;
+.campaigns {
+  position: relative;
+  padding-right: 20%;
+  background-color: #ffe;
+  z-index: 2;
 }
 .campaign-title {
   color: #fff;
@@ -136,6 +146,7 @@ h2 {
   top: 4rem;
   right: 1rem;
   padding-bottom: 1rem;
+  z-index: 2;
 }
 .openBtn::after {
   content: "";
@@ -165,17 +176,13 @@ h2 {
   background-color: #fff;
   border-top: 1px solid #b74;
   border-bottom: 1px solid #b74;
-  height: 0;
-  line-height: 0;
-  transform: translate(0, -4rem);
-  transition: line-height 0.4s,height 0.4s,transform 0.4s, z-index 0.4s;
   z-index: -1;
+  transition: 0.4s;
 }
 .resultDetail.opened {
-  height: auto;
-  line-height: 1;
-  transform: translate(0,0);
   z-index: 1;
+  height: fit-content;
+  transition: 0.4s;
 }
 .detail-title {
   width: 15%;

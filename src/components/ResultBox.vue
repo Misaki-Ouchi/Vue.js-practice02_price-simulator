@@ -2,13 +2,17 @@
 import { ref, reactive } from "vue";
 
 defineProps<{
-  showTelPlan: boolean
+  showTelPlan: boolean;
+  isDisOpenBtn: boolean;
+  showDetail: boolean;
+  selectedItem: {};
 }>();
+defineEmits(["resetClick", "openBtnClick"]);
 
 </script>
 <template>
-{{selectedItem}}
-  <div class="result">
+  {{ selectedItem }}
+  <div id="result" class="result">
     <div class="result-wrap">
       <h2>診断結果</h2>
       <div class="result-box">
@@ -39,8 +43,10 @@ defineProps<{
           </div>
         </div>
         <!-- /.campaign -->
-        <button class="openBtn">内訳</button>
-        <div class="detail">
+        <button @click="$emit('openBtnClick')" class="openBtn" :disabled="isDisOpenBtn">
+          内訳
+        </button>
+        <div v-show="showDetail" class="detail">
           <div class="detail-title"><p>内訳</p></div>
           <div class="detail-number"><div>1</div></div>
           <div class="detail-plans">
@@ -53,7 +59,11 @@ defineProps<{
               <p><slot name="telCost"></slot>円</p>
             </div>
           </div>
-          <div class="btn-wrap"><button class="closeBtn">×</button></div>
+          <div class="btn-wrap">
+            <button @click="$emit('resetClick')" class="resetBtn">
+              ×
+            </button>
+          </div>
         </div>
         <!-- /.detail -->
       </div>

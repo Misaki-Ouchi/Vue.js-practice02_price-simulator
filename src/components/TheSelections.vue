@@ -12,14 +12,14 @@ const data = reactive({
   btnSelected: false, // 選択したボタン色変更
   resultsShow: false, // 結果表示/非表示
   isDisOpenBtn: true, // 内訳ボタンdisabled
-  showDetail: false, // 結果の内訳表示/非表示
+  // showDetail: false, // 結果の内訳表示/非表示
   elm: "", // リセット後スクロール位置取得用要素
   h: "", // リセット後スクロール位置
 });
 onMounted(() => {
   data.elm = document.querySelector("#question");
-  data.h = data.elm.getBoundingClientRect().top + window.scrollY
-})
+  data.h = data.elm.getBoundingClientRect().top + window.scrollY;
+});
 const list = ref([
   {
     title: "電話番号（090等）は必要ですか？",
@@ -352,8 +352,14 @@ const next = () => {
     data.isDisOpenBtn = false;
   }
 };
+// 内訳クリック
 const openBtnEvent = () => {
-  data.showDetail = !data.showDetail;
+  // data.showDetail = !data.showDetail;
+  let openBtn = document.querySelector(".openBtn");
+  openBtn.classList.toggle("opened");
+  let resultDetail = document.querySelector(".resultDetail");
+  console.log(resultDetail)
+  resultDetail.classList.toggle("opened");
 };
 // リセットイベント
 const resetEvent = () => {
@@ -367,7 +373,7 @@ const resetEvent = () => {
     telCost: "",
   };
   newList.value = [];
-  data.showDetail = false;
+  // data.showDetail = false;
   data.isDisOpenBtn = true;
   // 最初の選択肢に戻る
   data.trans_name = "prev";
@@ -395,7 +401,6 @@ const resetEvent = () => {
   <ResultBox
     :showTelPlan="selectedItem.showTelPlan"
     :isDisOpenBtn="data.isDisOpenBtn"
-    :showDetail="data.showDetail"
     @openBtnClick="openBtnEvent"
     @resetClick="resetEvent"
   >

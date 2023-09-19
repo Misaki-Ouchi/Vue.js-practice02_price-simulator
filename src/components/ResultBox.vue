@@ -4,7 +4,7 @@ import { ref, reactive } from "vue";
 defineProps<{
   showTelPlan: boolean;
   isDisOpenBtn: boolean;
-  showDetail: boolean;
+  // showDetail: boolean;
 }>();
 defineEmits(["resetClick", "openBtnClick"]);
 
@@ -44,7 +44,7 @@ defineEmits(["resetClick", "openBtnClick"]);
         <button @click="$emit('openBtnClick')" class="openBtn" :disabled="isDisOpenBtn">
           内訳
         </button>
-        <div v-show="showDetail" class="detail">
+        <div class="resultDetail">
           <div class="detail-title"><p>内訳</p></div>
           <div class="detail-number"><div>1</div></div>
           <div class="detail-plans">
@@ -63,7 +63,7 @@ defineEmits(["resetClick", "openBtnClick"]);
             </button>
           </div>
         </div>
-        <!-- /.detail -->
+        <!-- /.resultDetail -->
       </div>
       <!-- /.result-box -->
     </div>
@@ -133,16 +133,49 @@ h2 {
 }
 .openBtn {
   position: absolute;
-  right: 1rem;
   top: 4rem;
+  right: 1rem;
+  padding-bottom: 1rem;
 }
-.detail {
+.openBtn::after {
+  content: "";
+  position: absolute;
+  bottom: -0.2rem;
+  right: 0;
+  display: inline-block;
+  width: 0.8rem;
+  height: 0.8rem;
+  border-top: 1px solid #333;
+  border-left: 1px solid #333;
+  transform: rotate(-135deg) translate(1rem);
+  transition: transform 0.4s, bottom 0.4s;
+}
+.openBtn.opened::after {
+  transform: rotate(45deg) translate(-1rem);
+  bottom: -0.8rem;
+}
+.openBtn[disabled]::after {
+  opacity: 0.3;
+}
+.resultDetail {
   display: flex;
+  position: relative;
   justify-content: space-between;
   align-items: center;
   background-color: #fff;
   border-top: 1px solid #b74;
   border-bottom: 1px solid #b74;
+  height: 0;
+  line-height: 0;
+  transform: translate(0, -4rem);
+  transition: line-height 0.4s,height 0.4s,transform 0.4s, z-index 0.4s;
+  z-index: -1;
+}
+.resultDetail.opened {
+  height: auto;
+  line-height: 1;
+  transform: translate(0,0);
+  z-index: 1;
 }
 .detail-title {
   width: 15%;

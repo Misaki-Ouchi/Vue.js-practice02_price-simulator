@@ -11,6 +11,7 @@ const data = reactive({
   resultsShow: false, // 結果表示/非表示
   isDisOpenBtn: true, // 内訳ボタンdisabled
   btnId: "", // DOMのbutton
+  sctId: "", // DOMの.selection
   elm: "", // リセット後スクロール位置取得用要素
   h: "", // リセット後スクロール位置
   openBtn: "", // 内訳ボタンDOM
@@ -29,7 +30,7 @@ onMounted(() => {
   data.resultBox = document.querySelector(".result-box")
   data.resultBoxH = data.resultBox.clientHeight
   data.resultBox.style.height = `calc(${data.resultBoxH}px - ${data.detailH}px)`
-  data.btnId = document.querySelectorAll(".buttons")
+  data.sctId = document.querySelectorAll(".selection")
 });
 // 選択肢リスト
 const list = ref([
@@ -248,7 +249,7 @@ const selectedItem = ref({
   dataCost: 0, // プラン金額
   showTelPlan: false, // 通話定額プラン有無
   telPlan: "", // 通話定額プラン名
-  telCost: "", // 通話定額プラン金額
+  telCost: 0, // 通話定額プラン金額
 });
 const newList = ref([]);
 // ref属性の中身
@@ -265,13 +266,20 @@ const handleEvent = (newData) => {
   let item = selectedItem.value; // 格納リストの中身
   let newItem = newList.value[newList.value.length - 1];
   // ボタン色変更
-  data.btnId.forEach ( btnId => {
-    if(a.ans === btnId.id) {
-      btnId.classList.add("btnSelected")
-    } else {
-      btnId.classList.remove("btnSelected")
+  data.sctId.forEach( sctId => {
+    if (newItem.que === sctId.id) {
+      sctId.classList.add("sctSelected")
+      data.btnId = document.querySelectorAll(".sctSelected .buttons")
+      data.btnId.forEach ( btnId => {
+        if(newItem.ans === btnId.id) {
+          btnId.classList.add("btnSelected")
+        }
+        else if (btnId.classList.contains("btnSelected")) {
+          btnId.classList.remove("btnSelected")
+        }
+      })
     }
-  } )
+  })
   // 選択された内容によって条件分岐（スライド数増）& 選択内容格納リストの中身更新
   // １．電話必要か(音声 + SIM/eSIM)
   if (newItem.ans === "電話必要") {
@@ -369,10 +377,9 @@ const handleEvent = (newData) => {
 const prev = () => {
   data.trans_name = "prev";
   data.current_slide -= data.prev_slide.pop() + 1;
-  data.isDisabledN = false;
   if (data.current_slide <= 0) {
     data.current_slide = 0;
-    // ボタン無効化
+    // 前に戻るボタン無効化
     data.isDisabledP = true;
   }
 };
@@ -426,12 +433,14 @@ const resetEvent = () => {
 };
 </script>
 <template>
+{{selectedItem}}
   <div class="slider-outer">
     <transition-group :name="data.trans_name" v-for="(value, idx) in list">
       <div class="slider-inner" :key="idx" v-show="data.current_slide == idx">
         <Selection
           :key="idx"
           :value="value"
+          :class="value.title"
           @clickEvent="handleEvent"
           ref="selection"
         ></Selection>

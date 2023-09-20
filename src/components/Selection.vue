@@ -16,6 +16,7 @@ const data = reactive({
   <Question>{{ value.title }}</Question>
   <div
   class="selection"
+  :id="value.title"
   >
     <template v-for="(item, idx) in value.items">
       <Normal-Button

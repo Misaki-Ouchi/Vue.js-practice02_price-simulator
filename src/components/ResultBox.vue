@@ -73,6 +73,9 @@ defineEmits(["resetClick", "openBtnClick"]);
   </div>
 </template>
 <style scoped>
+.result {
+  min-width:500px;
+}
 .result-wrap {
   width: 90%;
   margin: 2rem auto;

@@ -37,7 +37,7 @@ defineEmits(["btnClick"]);
       <!-- 中身 改行のみVer.-->
       <p class="details" v-if="msgType3">
         <span class="detail"
-          ><b><slot name="detail"></slot></b><br
+          ><slot name="detail"></slot><br
         /></span>
         <span class="detail-sub"><slot name="detail-sub"></slot></span>
       </p>

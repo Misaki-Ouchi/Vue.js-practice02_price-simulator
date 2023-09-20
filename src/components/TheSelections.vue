@@ -25,12 +25,12 @@ onMounted(() => {
   data.h = data.elm.getBoundingClientRect().top + window.scrollY;
   data.openBtn = document.querySelector(".openBtn");
   data.resultDetail = document.querySelector(".resultDetail");
-  data.detailH = data.resultDetail.clientHeight
-  data.resultDetail.style.transform = `translateY(-${data.detailH + 2}px)`
-  data.resultBox = document.querySelector(".result-box")
-  data.resultBoxH = data.resultBox.clientHeight
-  data.resultBox.style.height = `calc(${data.resultBoxH}px - ${data.detailH}px)`
-  data.sctId = document.querySelectorAll(".selection")
+  data.detailH = data.resultDetail.clientHeight;
+  data.resultDetail.style.transform = `translateY(-${data.detailH + 2}px)`;
+  data.resultBox = document.querySelector(".result-box");
+  data.resultBoxH = data.resultBox.clientHeight;
+  data.resultBox.style.height = `calc(${data.resultBoxH}px - ${data.detailH}px)`;
+  data.sctId = document.querySelectorAll(".selection");
 });
 // 選択肢リスト
 const list = ref([
@@ -253,8 +253,8 @@ const selectedItem = ref({
 });
 const newList = ref([]);
 // ref属性の中身
-const selection = ref(null)
-const buttons = ref(null)
+const selection = ref(null);
+const buttons = ref(null);
 // ボタン選択イベント
 const handleEvent = (newData) => {
   // データ格納
@@ -266,24 +266,23 @@ const handleEvent = (newData) => {
   let item = selectedItem.value; // 格納リストの中身
   let newItem = newList.value[newList.value.length - 1];
   // ボタン色変更
-  data.sctId.forEach( sctId => {
+  data.sctId.forEach((sctId) => {
     if (newItem.que === sctId.id) {
-      sctId.classList.add("sctSelected")
-      data.btnId = document.querySelectorAll(".sctSelected .buttons")
-      data.btnId.forEach ( btnId => {
-        if(newItem.ans === btnId.id) {
-          btnId.classList.add("btnSelected")
+      sctId.classList.add("sctSelected");
+      data.btnId = document.querySelectorAll(".sctSelected .buttons");
+      data.btnId.forEach((btnId) => {
+        if (newItem.ans === btnId.id) {
+          btnId.classList.add("btnSelected");
+        } else if (btnId.classList.contains("btnSelected")) {
+          btnId.classList.remove("btnSelected");
         }
-        else if (btnId.classList.contains("btnSelected")) {
-          btnId.classList.remove("btnSelected")
-        }
-      })
+      });
     }
-  })
+    sctId.classList.remove("sctSelected");
+  });
   // 選択された内容によって条件分岐（スライド数増）& 選択内容格納リストの中身更新
   // １．電話必要か(音声 + SIM/eSIM)
   if (newItem.ans === "電話必要") {
-    item.dataPlan = "音声";
     data.prev_slide.push(0);
   }
   if (newItem.ans === "電話不要") {
@@ -292,7 +291,7 @@ const handleEvent = (newData) => {
   }
   // ２．SIM/eSIM
   if (newItem.que === "ご利用になるSIMの形状を教えてください") {
-    item.dataPlan += newItem.ans;
+    item.dataPlan = "音声" + newItem.ans;
     data.prev_slide.push(0);
   }
   // ３．通話定額
@@ -400,14 +399,16 @@ const next = () => {
 };
 // 内訳クリック
 const openBtnEvent = () => {
+  data.detailH = data.resultDetail.clientHeight;
+  data.resultDetail.style.transform = `translateY(-${data.detailH + 2}px)`;
   data.openBtn.classList.toggle("opened");
   data.resultDetail.classList.toggle("opened");
   if (data.resultDetail.classList.contains("opened")) {
-    data.resultDetail.style.transform = "translateY(0)"
-    data.resultBox.style.height = `${data.resultBoxH}px`
+    data.resultDetail.style.transform = "translateY(0)";
+    data.resultBox.style.height = `${data.resultBoxH}px`;
   } else {
-    data.resultDetail.style.transform = `translateY(-${data.detailH + 2}px)`
-    data.resultBox.style.height = `calc(${data.resultBoxH}px - ${data.detailH}px)`
+    data.resultDetail.style.transform = `translateY(-${data.detailH + 2}px)`;
+    data.resultBox.style.height = `calc(${data.resultBoxH}px - ${data.detailH}px)`;
   }
 };
 // リセットイベント
@@ -422,9 +423,21 @@ const resetEvent = () => {
     telCost: "",
   };
   newList.value = [];
+  // 選択後の色初期化
+  data.sctId.forEach((sctId) => {
+    sctId.classList.remove("sctSelected");
+  });
+  data.btnId = document.querySelectorAll(".btnSelected")
+  data.btnId.forEach((btnId) => {
+    btnId.classList.remove("btnSelected");
+  });
+  // 内訳ボタン無効化・閉じた状態
   data.isDisOpenBtn = true;
-    data.openBtn.classList.remove("opened");
+  data.openBtn.classList.remove("opened");
   data.resultDetail.classList.remove("opened");
+  // 診断結果の高さ初期化
+  data.resultDetail.style.transform = `translateY(-${data.detailH + 2}px)`;
+  data.resultBox.style.height = `calc(${data.resultBoxH}px - ${data.detailH}px)`;
   // 最初の選択肢に戻る
   data.trans_name = "prev";
   data.current_slide = 0;
@@ -433,14 +446,12 @@ const resetEvent = () => {
 };
 </script>
 <template>
-{{selectedItem}}
   <div class="slider-outer">
     <transition-group :name="data.trans_name" v-for="(value, idx) in list">
       <div class="slider-inner" :key="idx" v-show="data.current_slide == idx">
         <Selection
           :key="idx"
           :value="value"
-          :class="value.title"
           @clickEvent="handleEvent"
           ref="selection"
         ></Selection>
@@ -482,7 +493,7 @@ const resetEvent = () => {
   width: 450px;
   height: 550px;
   overflow: hidden;
-  margin: 0 auto 20px;
+  margin: 1rem auto 20px;
 }
 .slider-inner {
   position: absolute;

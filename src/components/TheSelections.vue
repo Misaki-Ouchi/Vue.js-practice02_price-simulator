@@ -312,6 +312,7 @@ const handleEvent = (newData) => {
   }
   if (newItem.ans === "通話定額は使わない") {
     item.showTelPlan = false;
+    item.telCost = 0
   }
   // ４．SMS使うか
   if (newItem.ans === "SMSを使う") {

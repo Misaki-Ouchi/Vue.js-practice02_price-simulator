@@ -12,6 +12,8 @@
 <style scoped>
 .title {
   text-align: center;
+  width: 500px;
+  margin: auto;
 }
 h1 {
   margin-bottom: 0.5em;

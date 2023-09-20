@@ -1,32 +1,44 @@
 <script setup lang="ts">
-  defineProps<{
-    isSelected: boolean
-    isDeselected: boolean
-    msgType1: boolean
-    msgType2: boolean
-    isRecommend: boolean
-    isSale: boolean
-  }>()
+import { ref, reactive } from "vue";
 
-// button選択で.selected .deselected付与
-
+defineProps<{
+  msgType1: boolean;
+  msgType2: boolean;
+  msgType3: boolean;
+  isRecommend: boolean;
+  isSale: boolean;
+}>();
+defineEmits(["btnClick"]);
 </script>
 
 <template>
-  <button :class="{selected: isSelected, deselected: isDeselected}">
+  <button
+    ref="btn"
+    @click="$emit('btnClick')"
+    class="buttons"
+  >
     <div class="button-wrap">
       <!-- アイコン -->
       <i>
         <slot name="icon"></slot>
       </i>
-      <!-- 中身 1行Ver.-->
+      <!-- 中身 太字・改行無しVer.-->
       <p class="details" v-if="msgType1">
-        <span class="detail selected"><slot name="detail"></slot></span>
+        <span class="detail"><slot name="detail"></slot></span>
         <span class="detail-sub"><slot name="detail-sub"></slot></span>
       </p>
-      <!-- 中身 2行Ver.-->
+      <!-- 中身 1行目太字Ver.-->
       <p class="details" v-if="msgType2">
-        <span class="detail selected"><b><slot name="detail"></slot></b><br></span>
+        <span class="detail"
+          ><b><slot name="detail"></slot></b><br
+        /></span>
+        <span class="detail-sub"><slot name="detail-sub"></slot></span>
+      </p>
+      <!-- 中身 改行のみVer.-->
+      <p class="details" v-if="msgType3">
+        <span class="detail"
+          ><slot name="detail"></slot><br
+        /></span>
         <span class="detail-sub"><slot name="detail-sub"></slot></span>
       </p>
       <!-- オススメ -->
@@ -51,9 +63,6 @@
 </template>
 
 <style scoped>
-b {
-  font-weight: bold;
-}
 button {
   position: relative;
   cursor: pointer;
@@ -61,13 +70,11 @@ button {
   border: 2px solid #bbb;
   border-radius: 15px;
   background-color: #eee;
+  z-index: 10;
 }
-button.selected {
-  border-color: rgb(255, 50, 180);
-  background-color: rgba(255, 50, 180, 0.1);
-}
-button.deselected i {
-  background-color: #bbb;
+
+b {
+  font-weight: bold;
 }
 .button-wrap {
   display: flex;

@@ -23,7 +23,8 @@ header {
   padding: 2rem;
 }
 .wrapper {
-  padding: 1rem;
+  max-width: 800px;
+  margin: auto;
 }
 
 .logo {

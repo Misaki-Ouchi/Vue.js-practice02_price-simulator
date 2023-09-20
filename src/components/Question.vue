@@ -1,5 +1,5 @@
 <template>
-  <div class="question">
+  <div id="question">
     <span>Q</span>
     <p>
       <slot></slot>
@@ -8,7 +8,7 @@
 </template>
 
 <style scoped>
-.question {
+#question {
   display: flex;
   padding: 0.5rem 0;
 }

@@ -4,17 +4,19 @@ import { ref, reactive } from "vue";
 defineProps<{
   msgType1: boolean;
   msgType2: boolean;
+  msgType3: boolean;
   isRecommend: boolean;
   isSale: boolean;
-  btnSelected: boolean;
 }>();
 defineEmits(["btnClick"]);
 </script>
 
 <template>
   <button
-    @click="btnSelected = true, $emit('btnClick')"
-    :class="{ btnSelected: btnSelected }">
+    ref="btn"
+    @click="$emit('btnClick')"
+    class="buttons"
+  >
     <div class="button-wrap">
       <!-- アイコン -->
       <i>

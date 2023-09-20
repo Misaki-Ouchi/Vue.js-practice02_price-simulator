@@ -4,7 +4,6 @@ import { ref, reactive } from "vue";
 defineProps<{
   showTelPlan: boolean;
   isDisOpenBtn: boolean;
-  // showDetail: boolean;
 }>();
 defineEmits(["resetClick", "openBtnClick"]);
 </script>
@@ -143,7 +142,7 @@ h2 {
 }
 .openBtn {
   position: absolute;
-  top: 4rem;
+  top: 3rem;
   right: 1rem;
   padding-bottom: 1rem;
   z-index: 2;

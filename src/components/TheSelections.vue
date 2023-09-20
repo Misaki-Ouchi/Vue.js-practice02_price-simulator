@@ -8,10 +8,9 @@ const data = reactive({
   current_slide: 0, // 表示中のスライド
   prev_slide: [], // 一つ前にスライドした数
   isDisabledP: true, // 前に戻るボタンdisabled
-  sctSelected: false, // 設問(済)の選択肢色変更
-  btnSelected: false, // 選択したボタン色変更
   resultsShow: false, // 結果表示/非表示
   isDisOpenBtn: true, // 内訳ボタンdisabled
+  btnId: "", // DOMのbutton
   elm: "", // リセット後スクロール位置取得用要素
   h: "", // リセット後スクロール位置
   openBtn: "", // 内訳ボタンDOM
@@ -30,7 +29,9 @@ onMounted(() => {
   data.resultBox = document.querySelector(".result-box")
   data.resultBoxH = data.resultBox.clientHeight
   data.resultBox.style.height = `calc(${data.resultBoxH}px - ${data.detailH}px)`
+  data.btnId = document.querySelectorAll(".buttons")
 });
+// 選択肢リスト
 const list = ref([
   {
     title: "電話番号（090等）は必要ですか？",
@@ -38,6 +39,7 @@ const list = ref([
       {
         msgType1: true,
         msgType2: false,
+        msgType3: false,
         msg: ["必要", "（お乗り換えの方はこちら）"],
         isRecommend: false,
         isSale: false,
@@ -47,6 +49,7 @@ const list = ref([
       {
         msgType1: true,
         msgType2: false,
+        msgType3: false,
         msg: ["不要"],
         isRecommend: false,
         isSale: false,
@@ -61,6 +64,7 @@ const list = ref([
       {
         msgType1: true,
         msgType2: false,
+        msgType3: false,
         msg: ["SIMカード", "（カード型）"],
         isRecommend: false,
         isSale: false,
@@ -70,6 +74,7 @@ const list = ref([
       {
         msgType1: true,
         msgType2: false,
+        msgType3: false,
         msg: ["eSIM※"],
         isRecommend: false,
         isSale: false,
@@ -84,6 +89,7 @@ const list = ref([
       {
         msgType1: false,
         msgType2: true,
+        msgType3: false,
         msg: ["通話定額5分+", "1回5分以内の国内通話無料"],
         isRecommend: false,
         isSale: true,
@@ -95,6 +101,7 @@ const list = ref([
       {
         msgType1: false,
         msgType2: true,
+        msgType3: false,
         msg: ["通話定額10分+", "1回10分以内の国内通話無料"],
         isRecommend: false,
         isSale: true,
@@ -106,6 +113,7 @@ const list = ref([
       {
         msgType1: false,
         msgType2: true,
+        msgType3: false,
         msg: ["かけ放題+", "無制限で国内通話無料"],
         isRecommend: false,
         isSale: true,
@@ -117,6 +125,7 @@ const list = ref([
       {
         msgType1: true,
         msgType2: false,
+        msgType3: false,
         msg: ["通話定額は使わない"],
         isRecommend: false,
         isSale: false,
@@ -131,6 +140,7 @@ const list = ref([
       {
         msgType1: true,
         msgType2: false,
+        msgType3: false,
         msg: ["SMSを使う"],
         isRecommend: false,
         isSale: false,
@@ -140,6 +150,7 @@ const list = ref([
       {
         msgType1: true,
         msgType2: false,
+        msgType3: false,
         msg: ["SMSは使わない"],
         isRecommend: false,
         isSale: false,
@@ -154,6 +165,7 @@ const list = ref([
       {
         msgType1: true,
         msgType2: false,
+        msgType3: false,
         msg: ["データeSIMを使う"],
         isRecommend: false,
         isSale: false,
@@ -163,6 +175,7 @@ const list = ref([
       {
         msgType1: true,
         msgType2: false,
+        msgType3: false,
         msg: ["データeSIMは使わない"],
         isRecommend: false,
         isSale: false,
@@ -175,10 +188,10 @@ const list = ref([
     title: "データ通信は毎月どのくらいご利用ですか？",
     items: [
       {
-        msgType1: true,
+        msgType1: false,
         msgType2: false,
         msgType3: true,
-        msg: ["家のWi-Fi利用が中心", "（外出先でネットはあまり使わない）"],
+        msg: ["家のWi-Fi利用が中心", "外出先でネットはあまり使わない"],
         isRecommend: false,
         isSale: false,
         isSelected: false,
@@ -187,6 +200,7 @@ const list = ref([
       {
         msgType1: true,
         msgType2: false,
+        msgType3: false,
         msg: ["外出先のSNS利用やネット閲覧が中心"],
         isRecommend: true,
         isSale: false,
@@ -196,6 +210,7 @@ const list = ref([
       {
         msgType1: true,
         msgType2: false,
+        msgType3: false,
         msg: ["外出先でゲームアプリを使う"],
         isRecommend: false,
         isSale: false,
@@ -205,6 +220,7 @@ const list = ref([
       {
         msgType1: true,
         msgType2: false,
+        msgType3: false,
         msg: ["外出先で動画を視聴しネットもよく使う"],
         isRecommend: false,
         isSale: false,
@@ -214,6 +230,7 @@ const list = ref([
       {
         msgType1: true,
         msgType2: false,
+        msgType3: false,
         msg: ["外出先でギガ（データ量）を気にせず使いたい"],
         isRecommend: false,
         isSale: false,
@@ -234,7 +251,9 @@ const selectedItem = ref({
   telCost: "", // 通話定額プラン金額
 });
 const newList = ref([]);
-
+// ref属性の中身
+const selection = ref(null)
+const buttons = ref(null)
 // ボタン選択イベント
 const handleEvent = (newData) => {
   // データ格納
@@ -243,8 +262,16 @@ const handleEvent = (newData) => {
     ans: newData.ans,
   };
   newList.value.push(a);
-  let item = selectedItem.value;
+  let item = selectedItem.value; // 格納リストの中身
   let newItem = newList.value[newList.value.length - 1];
+  // ボタン色変更
+  data.btnId.forEach ( btnId => {
+    if(a.ans === btnId.id) {
+      btnId.classList.add("btnSelected")
+    } else {
+      btnId.classList.remove("btnSelected")
+    }
+  } )
   // 選択された内容によって条件分岐（スライド数増）& 選択内容格納リストの中身更新
   // １．電話必要か(音声 + SIM/eSIM)
   if (newItem.ans === "電話必要") {
@@ -366,7 +393,6 @@ const next = () => {
 };
 // 内訳クリック
 const openBtnEvent = () => {
-  // data.showDetail = !data.showDetail;
   data.openBtn.classList.toggle("opened");
   data.resultDetail.classList.toggle("opened");
   if (data.resultDetail.classList.contains("opened")) {
@@ -406,8 +432,8 @@ const resetEvent = () => {
         <Selection
           :key="idx"
           :value="value"
-          :btnSelected="data.btnSelected"
           @clickEvent="handleEvent"
+          ref="selection"
         ></Selection>
       </div>
     </transition-group>
